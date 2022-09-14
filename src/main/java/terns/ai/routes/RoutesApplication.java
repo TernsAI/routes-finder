@@ -36,11 +36,10 @@ public class RoutesApplication {
 				.parse();
 		List<OutputCsv> output = iterationUtils.combineRoutes(ports);
 
-		try (FileWriter writer = new FileWriter((new ClassPathResource(
-				".").getFile()+"output.csv"))) {
+		try (FileWriter writer = new FileWriter("output.csv")) {
 			ColumnPositionMappingStrategy mappingStrategy =  new ColumnPositionMappingStrategy();
 			mappingStrategy.setType(OutputCsv.class);
-			String[] columns = { "Origin", "Destination" };
+			String[] columns = { "origin", "destination" };
 			mappingStrategy.setColumnMapping(columns);
 			StatefulBeanToCsv beanWriter = new StatefulBeanToCsvBuilder(writer)
 					.withMappingStrategy(mappingStrategy)
