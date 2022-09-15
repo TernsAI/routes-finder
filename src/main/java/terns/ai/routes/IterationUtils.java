@@ -7,27 +7,31 @@ import java.util.stream.IntStream;
 
 public class IterationUtils {
 
-    public List<OutputCsv> combineRoutes(List<Port> ports) {
-        List<OutputCsv> toReturn = new ArrayList<>();
+    public List<NavalRoute> combineRoutes(List<Port> ports) {
+        List<NavalRoute> toReturn = new ArrayList<>();
         int i = 0;
         int j = 1;
         int k = 0;
         while (i < ports.size() - 1) {
             while (j < ports.size()) {
-                OutputCsv outputCsv = new OutputCsv();
-                OutputCsv outputCsvInverse = new OutputCsv();
+                NavalRoute navalRoute = new NavalRoute();
+                NavalRoute navalRouteInverse = new NavalRoute();
                 Port origin = ports.get(i);
                 Port destination = ports.get(j);
                 k++;
-                outputCsv.setRouteId(k);
-                outputCsv.setOrigin(origin.getPort());
-                outputCsv.setDestination(destination.getPort());
-                toReturn.add(outputCsv);
+                navalRoute.setId(k);
+                navalRoute.setOrigin_port_id(origin.getPortid());
+                navalRoute.setDestination_port_id(destination.getPortid());
+                navalRoute.setOrigin(origin.getPort());
+                navalRoute.setDestination(destination.getPort());
+                toReturn.add(navalRoute);
                 k++;
-                outputCsvInverse.setRouteId(k);
-                outputCsvInverse.setOrigin(destination.getPort());
-                outputCsvInverse.setDestination(origin.getPort());
-                toReturn.add(outputCsvInverse);
+                navalRouteInverse.setId(k);
+                navalRouteInverse.setOrigin_port_id(destination.getPortid());
+                navalRouteInverse.setDestination_port_id(origin.getPortid());
+                navalRouteInverse.setOrigin(destination.getPort());
+                navalRouteInverse.setDestination(origin.getPort());
+                toReturn.add(navalRouteInverse);
                 j++;
             }
             i++;
@@ -36,7 +40,7 @@ public class IterationUtils {
         return toReturn;
     }
 
-    private static List<boolean[]> generateBooleanCombinations(int n) {
+    public static List<boolean[]> generateBooleanCombinations(int n) {
         return IntStream.range(0, (int) Math.pow(2, n))
                 .mapToObj(i -> bitSetToArray(BitSet.valueOf(new long[]{i}), n))
                 .toList();

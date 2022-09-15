@@ -29,37 +29,23 @@ import java.util.stream.IntStream;
 public class RoutesApplication {
 
 	public static void main(String[] args) throws IOException {
-		IterationUtils iterationUtils = new IterationUtils();
 		SpringApplication.run(RoutesApplication.class, args);
+		//utils Objects
+		CsvUtils csvUtils = new CsvUtils();
 		SeaRouting sr = new SeaRouting();
-		List<Port> ports = new CsvToBeanBuilder(new FileReader(new ClassPathResource(
-				"coordinates.csv").getFile()))
-				.withType(Port.class)
-				.build()
-				.parse();
-		List<OutputCsv> output = iterationUtils.combineRoutes(ports);
 
+		List<Port> ports = csvUtils.readPortsCsv();
 
-		try (FileWriter writer = new FileWriter("output.csv")) {
-			ColumnPositionMappingStrategy mappingStrategy =  new ColumnPositionMappingStrategy();
-			mappingStrategy.setType(OutputCsv.class);
-			String[] columns = { "origin", "destination","routeId" };
-			mappingStrategy.setColumnMapping(columns);
-			StatefulBeanToCsv beanWriter = new StatefulBeanToCsvBuilder(writer)
-					.withMappingStrategy(mappingStrategy)
-					.build();
+		csvUtils.writeRoutesCsv(ports);
 
-			beanWriter.write(output);
-		} catch (CsvRequiredFieldEmptyException e) {
-			throw new RuntimeException(e);
-		} catch (CsvDataTypeMismatchException e) {
-			throw new RuntimeException(e);
-		}
+		List<boolean[]> booleans = IterationUtils.generateBooleanCombinations(12);
+
 		Port santos = ports.stream().filter(port -> port.getPort().equalsIgnoreCase("santos")).findFirst().orElse(null);
 		Port fredericia = ports.stream().filter(port -> port.getPort().equalsIgnoreCase("fredericia")).findFirst().orElse(null);
 
 		Feature route = sr.getRoute(santos.getLon(), santos.getLat(), fredericia.getLon(), fredericia.getLat());
 		Feature route2 = sr.getRoute(fredericia.getLon(), fredericia.getLat(), santos.getLon(), santos.getLat());
+
 		Objects.equals(route.getGeometry(),route2.getGeometry());
 		GeoDistanceUtil.getLengthGeoKM(route.getGeometry());
 

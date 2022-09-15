@@ -1,0 +1,15 @@
+id;name;draft;air_draft;beam
+1;Suez Canal;20;70;78
+2;Panama Canal;15.2;57.91;49
+3;Malacca Strait;20.5;;60
+4;Gibraltar Strait;;;
+5;Dover Strait;19;64;26
+6;Bering Strait;;;
+7;Magellan Strait;20;;
+8;Bab-el-Mandeb Strait;;;
+9;Kiel Canal;9.5;40;32.5
+10;Corinth Canal;;;
+11;Northwest passage;;;
+12;Northeast passage;;;
+
+
