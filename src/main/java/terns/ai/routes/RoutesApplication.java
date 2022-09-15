@@ -20,7 +20,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
+import java.util.BitSet;
+
 import java.util.Objects;
+import java.util.stream.IntStream;
 
 @SpringBootApplication
 public class RoutesApplication {
@@ -36,10 +39,11 @@ public class RoutesApplication {
 				.parse();
 		List<OutputCsv> output = iterationUtils.combineRoutes(ports);
 
+
 		try (FileWriter writer = new FileWriter("output.csv")) {
 			ColumnPositionMappingStrategy mappingStrategy =  new ColumnPositionMappingStrategy();
 			mappingStrategy.setType(OutputCsv.class);
-			String[] columns = { "origin", "destination" };
+			String[] columns = { "origin", "destination","routeId" };
 			mappingStrategy.setColumnMapping(columns);
 			StatefulBeanToCsv beanWriter = new StatefulBeanToCsvBuilder(writer)
 					.withMappingStrategy(mappingStrategy)
@@ -58,6 +62,8 @@ public class RoutesApplication {
 		Feature route2 = sr.getRoute(fredericia.getLon(), fredericia.getLat(), santos.getLon(), santos.getLat());
 		Objects.equals(route.getGeometry(),route2.getGeometry());
 		GeoDistanceUtil.getLengthGeoKM(route.getGeometry());
+
+
 	}
 
 }

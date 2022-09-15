@@ -4,6 +4,8 @@ import com.opencsv.bean.CsvBindByName;
 
 public class Port {
     @CsvBindByName
+    private int portid;
+    @CsvBindByName
     private String port;
     @CsvBindByName
     private double lat;
@@ -34,10 +36,19 @@ public class Port {
         this.lon = lon;
     }
 
+    public int getPortid() {
+        return portid;
+    }
+
+    public void setPortid(int portid) {
+        this.portid = portid;
+    }
+
     @Override
     public String toString() {
         return "Port{" +
-                "port='" + port + '\'' +
+                "portid=" + portid +
+                ", port='" + port + '\'' +
                 ", lat=" + lat +
                 ", lon=" + lon +
                 '}';
