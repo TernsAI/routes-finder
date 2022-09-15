@@ -1,4 +1,4 @@
-package terns.ai.routes;
+package terns.ai.routes.csvMappings;
 
 import com.opencsv.bean.CsvBindByName;
 

@@ -7,14 +7,15 @@ import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import org.springframework.core.io.ClassPathResource;
+import terns.ai.routes.csvMappings.NavalRoute;
+import terns.ai.routes.csvMappings.Port;
+import terns.ai.routes.csvMappings.RelNavalRouteCanals;
 
 import java.io.*;
 import java.util.List;
 
 public class CsvUtils {
-    public void writeRoutesCsv(List<Port> ports) throws IOException {
-        IterationUtils iterationUtils = new IterationUtils();
-        List<NavalRoute> output = iterationUtils.combineRoutes(ports);
+    public void writeRoutesCsv(List<NavalRoute> navalRoutes) throws IOException {
         try (FileWriter writer = new FileWriter("naval_route.csv")) {
             ColumnPositionMappingStrategy mappingStrategy = new ColumnPositionMappingStrategy();
             mappingStrategy.setType(NavalRoute.class);
@@ -26,7 +27,7 @@ public class CsvUtils {
                     .withApplyQuotesToAll(false)
                     .build();
 
-            beanWriter.write(output);
+            beanWriter.write(navalRoutes);
         } catch (CsvRequiredFieldEmptyException | IOException | CsvDataTypeMismatchException e) {
             throw new RuntimeException(e);
         }
@@ -46,6 +47,41 @@ public class CsvUtils {
         fos.write(result.getBytes());
         fos.flush();
     }
+
+    public void writeRelNavalRouteCanalsCsv(List<RelNavalRouteCanals> relNavalRouteCanalsList) throws IOException {
+
+        try (FileWriter writer = new FileWriter("rel_naval_route__canals.csv")) {
+            ColumnPositionMappingStrategy mappingStrategy = new ColumnPositionMappingStrategy();
+            mappingStrategy.setType(RelNavalRouteCanals.class);
+            String[] columns = {"canals_id","naval_route_id"};
+            mappingStrategy.setColumnMapping(columns);
+            StatefulBeanToCsv beanWriter = new StatefulBeanToCsvBuilder(writer)
+                    .withMappingStrategy(mappingStrategy)
+                    .withSeparator(';')
+                    .withApplyQuotesToAll(false)
+                    .build();
+
+            beanWriter.write(relNavalRouteCanalsList);
+        } catch (CsvRequiredFieldEmptyException | IOException | CsvDataTypeMismatchException e) {
+            throw new RuntimeException(e);
+        }
+        File mFile = new File("rel_naval_route__canals.csv");
+        FileInputStream fis = new FileInputStream(mFile);
+        BufferedReader br = new BufferedReader(new InputStreamReader(fis));
+        String result = "";
+        String line = "";
+        while( (line = br.readLine()) != null){
+            result = result + "\n"+line;
+        }
+
+        result = "canals_id;naval_route_id" + result;
+
+        mFile.delete();
+        FileOutputStream fos = new FileOutputStream(mFile);
+        fos.write(result.getBytes());
+        fos.flush();
+    }
+
 
     public List<Port> readPortsCsv() throws IOException {
         List<Port> ports = new CsvToBeanBuilder(new FileReader(new ClassPathResource(

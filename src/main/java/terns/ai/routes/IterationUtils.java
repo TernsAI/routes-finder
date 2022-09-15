@@ -1,5 +1,8 @@
 package terns.ai.routes;
 
+import terns.ai.routes.csvMappings.NavalRoute;
+import terns.ai.routes.csvMappings.Port;
+
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;

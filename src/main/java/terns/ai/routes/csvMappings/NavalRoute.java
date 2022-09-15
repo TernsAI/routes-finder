@@ -1,12 +1,12 @@
-package terns.ai.routes;
+package terns.ai.routes.csvMappings;
 
 import com.opencsv.bean.CsvBindByName;
 
 public class NavalRoute {
     private String origin;
     private String destination;
-    private double distance;
     private int id;
+    private double distance;
     private int origin_port_id;
     private int destination_port_id;
 
