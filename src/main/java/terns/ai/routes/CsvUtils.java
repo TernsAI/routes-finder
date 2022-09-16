@@ -15,7 +15,7 @@ import java.io.*;
 import java.util.List;
 
 public class CsvUtils {
-    public void writeRoutesCsv(List<NavalRoute> navalRoutes) throws IOException {
+    public static void writeRoutesCsv(List<NavalRoute> navalRoutes) throws IOException {
         try (FileWriter writer = new FileWriter("naval_route.csv")) {
             ColumnPositionMappingStrategy mappingStrategy = new ColumnPositionMappingStrategy();
             mappingStrategy.setType(NavalRoute.class);
@@ -48,7 +48,7 @@ public class CsvUtils {
         fos.flush();
     }
 
-    public void writeRelNavalRouteCanalsCsv(List<RelNavalRouteCanals> relNavalRouteCanalsList) throws IOException {
+    public static void writeRelNavalRouteCanalsCsv(List<RelNavalRouteCanals> relNavalRouteCanalsList) throws IOException {
 
         try (FileWriter writer = new FileWriter("rel_naval_route__canals.csv")) {
             ColumnPositionMappingStrategy mappingStrategy = new ColumnPositionMappingStrategy();
@@ -83,7 +83,7 @@ public class CsvUtils {
     }
 
 
-    public List<Port> readPortsCsv() throws IOException {
+    public static List<Port> readPortsCsv() throws IOException {
         List<Port> ports = new CsvToBeanBuilder(new FileReader(new ClassPathResource(
                 "coordinates.csv").getFile()))
                 .withType(Port.class)

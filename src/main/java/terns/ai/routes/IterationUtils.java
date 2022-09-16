@@ -1,16 +1,24 @@
 package terns.ai.routes;
 
+import eu.europa.ec.eurostat.jgiscotools.util.GeoDistanceUtil;
+import eu.europa.ec.eurostat.searoute.SeaRouting;
+import org.locationtech.jts.geom.Geometry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import terns.ai.routes.csvMappings.NavalRoute;
 import terns.ai.routes.csvMappings.Port;
+import terns.ai.routes.csvMappings.RelNavalRouteCanals;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.IntStream;
 
 public class IterationUtils {
 
-    public List<NavalRoute> combineRoutes(List<Port> ports) {
+    public static List<NavalRoute> combineRoutes(List<Port> ports) {
         List<NavalRoute> toReturn = new ArrayList<>();
         int i = 0;
         int j = 1;
@@ -28,19 +36,72 @@ public class IterationUtils {
                 navalRoute.setOrigin(origin.getPort());
                 navalRoute.setDestination(destination.getPort());
                 toReturn.add(navalRoute);
-//                k++;
-//                navalRouteInverse.setId(k);
-//                navalRouteInverse.setOrigin_port_id(destination.getPortid());
-//                navalRouteInverse.setDestination_port_id(origin.getPortid());
-//                navalRouteInverse.setOrigin(destination.getPort());
-//                navalRouteInverse.setDestination(origin.getPort());
-//                toReturn.add(navalRouteInverse);
                 j++;
             }
             i++;
             j = i + 1;
         }
         return toReturn;
+    }
+
+    public static void combineCanalsAndRoutes(List<Port> ports) throws IOException {
+        Logger logger = LoggerFactory.getLogger(IterationUtils.class);
+        SeaRouting sr = new SeaRouting();
+        List<NavalRoute> navalRoutes = combineRoutes(ports);
+        List<NavalRoute> navalRoutesAfterComputation = new ArrayList<>();
+        List<boolean[]> booleans = generateBooleanCombinations(12);
+        int routesId= 1;
+        List<RelNavalRouteCanals> relNavalRouteCanalsList = new ArrayList<>();
+        HashSet geometryRoutes = new HashSet<>();
+        for (NavalRoute navalRoute : navalRoutes) {
+            logger.info("prendo la rotta " + navalRoute.getOrigin() + " - " + navalRoute.getDestination());
+            for (boolean[] booleansRow : booleans) {
+                try {
+                    logger.info("provo la combinazione \n" + booleansRow.toString());
+                    Port origin = ports.stream().filter(port -> port.getPort().equalsIgnoreCase(navalRoute.getOrigin())).findFirst().orElseThrow(Exception::new);
+                    Port destination = ports.stream().filter(port -> port.getPort().equalsIgnoreCase(navalRoute.getDestination())).findFirst().orElseThrow(Exception::new);
+                    Geometry routeGeom = sr.getRoute(origin.getLon(), origin.getLat(), destination.getLon(), destination.getLat(), booleansRow[0], booleansRow[1], booleansRow[2], booleansRow[3], booleansRow[4], booleansRow[5], booleansRow[6], booleansRow[7], booleansRow[8], booleansRow[9], booleansRow[10], booleansRow[11]).getGeometry();
+                    if (geometryRoutes.add(routeGeom)) {
+                        NavalRoute navalRoute1 = new NavalRoute();
+                        NavalRoute navalRouteInverse = new NavalRoute();
+                        navalRoute1.setId(routesId);
+                        navalRoute1.setDistance(GeoDistanceUtil.getLengthGeoKM(routeGeom));
+                        navalRoute1.setOrigin(navalRoute.getOrigin());
+                        navalRoute1.setDestination(navalRoute.getDestination());
+                        navalRoute1.setOrigin_port_id(navalRoute.getOrigin_port_id());
+                        navalRoute1.setDestination_port_id(navalRoute.getDestination_port_id());
+                        navalRoutesAfterComputation.add(navalRoute1);
+                        logger.info("ho aggiunto la rotta dopo computazione: \n" + navalRoute1);
+                        routesId++;
+                        navalRouteInverse.setId(routesId);
+                        navalRouteInverse.setDistance(GeoDistanceUtil.getLengthGeoKM(routeGeom));
+                        navalRouteInverse.setOrigin(navalRoute.getDestination());
+                        navalRouteInverse.setDestination(navalRoute.getOrigin());
+                        navalRouteInverse.setOrigin_port_id(navalRoute.getDestination_port_id());
+                        navalRouteInverse.setDestination_port_id(navalRoute.getOrigin_port_id());
+                        navalRoutesAfterComputation.add(navalRouteInverse);
+                        logger.info("ho aggiunto la rotta inversa: \n" + navalRouteInverse);
+                        routesId++;
+                        for (int i = 0; i < booleansRow.length; i++) {
+                            if (booleansRow[i]) {
+                                RelNavalRouteCanals relNavalRouteCanals = new RelNavalRouteCanals(i + 1, navalRoute1.getId());
+                                relNavalRouteCanalsList.add(relNavalRouteCanals);
+                                logger.info("ho aggiunto la relazione: \n" + relNavalRouteCanals);
+                                RelNavalRouteCanals relNavalRouteCanalsInverse = new RelNavalRouteCanals(i + 1, navalRouteInverse.getId());
+                                relNavalRouteCanalsList.add(relNavalRouteCanalsInverse);
+                                logger.info("ho aggiunto la relazione inversa: \n" + relNavalRouteCanalsInverse);
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        logger.info("sto per scrivere i CSV");
+        CsvUtils.writeRoutesCsv(navalRoutesAfterComputation);
+        CsvUtils.writeRelNavalRouteCanalsCsv(relNavalRouteCanalsList);
+        logger.info("ho scritto i CSV");
     }
 
     public static List<boolean[]> generateBooleanCombinations(int n) {
