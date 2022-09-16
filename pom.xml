@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>terns.ai</groupId>
 	<artifactId>routes</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>routes</name>
 	<description>Find routes and canals</description>
 	<properties>
