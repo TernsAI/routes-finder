@@ -19,7 +19,7 @@ public class CsvUtils {
         try (FileWriter writer = new FileWriter("naval_route.csv")) {
             ColumnPositionMappingStrategy mappingStrategy = new ColumnPositionMappingStrategy();
             mappingStrategy.setType(NavalRoute.class);
-            String[] columns = {"origin","destination","id","origin_port_id","destination_port_id"};
+            String[] columns = {"origin","destination","id","distance","origin_port_id","destination_port_id"};
             mappingStrategy.setColumnMapping(columns);
             StatefulBeanToCsv beanWriter = new StatefulBeanToCsvBuilder(writer)
                     .withMappingStrategy(mappingStrategy)
@@ -40,7 +40,7 @@ public class CsvUtils {
             result = result + "\n"+line;
         }
 
-        result = "origin;destination;id;origin_port_id;destination_port_id" + result;
+        result = "origin;destination;id;distance;origin_port_id;destination_port_id" + result;
 
         mFile.delete();
         FileOutputStream fos = new FileOutputStream(mFile);

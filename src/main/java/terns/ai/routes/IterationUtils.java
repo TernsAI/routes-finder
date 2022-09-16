@@ -28,13 +28,13 @@ public class IterationUtils {
                 navalRoute.setOrigin(origin.getPort());
                 navalRoute.setDestination(destination.getPort());
                 toReturn.add(navalRoute);
-                k++;
-                navalRouteInverse.setId(k);
-                navalRouteInverse.setOrigin_port_id(destination.getPortid());
-                navalRouteInverse.setDestination_port_id(origin.getPortid());
-                navalRouteInverse.setOrigin(destination.getPort());
-                navalRouteInverse.setDestination(origin.getPort());
-                toReturn.add(navalRouteInverse);
+//                k++;
+//                navalRouteInverse.setId(k);
+//                navalRouteInverse.setOrigin_port_id(destination.getPortid());
+//                navalRouteInverse.setDestination_port_id(origin.getPortid());
+//                navalRouteInverse.setOrigin(destination.getPort());
+//                navalRouteInverse.setDestination(origin.getPort());
+//                toReturn.add(navalRouteInverse);
                 j++;
             }
             i++;
