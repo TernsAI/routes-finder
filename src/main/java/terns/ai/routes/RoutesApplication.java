@@ -40,7 +40,7 @@ public class RoutesApplication {
 		for (NavalRoute navalRoute : navalRoutes) {
 
 				logger.info("prendo la rotta " + navalRoute.getOrigin() + " - " + navalRoute.getDestination());
-				CompletableFuture<CombinationOutput> future = CompletableFuture.supplyAsync(()->IterationUtils.combineCanalsAndRoutes(navalRoute,ports));
+				CompletableFuture<CombinationOutput> future = CompletableFuture.supplyAsync(()->IterationUtils.combineCanalsAndRoutes(navalRoute,ports),executorService);
 				completableFutures.add(future);
 			}
 		CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[0])).exceptionally(ex -> null).join();
