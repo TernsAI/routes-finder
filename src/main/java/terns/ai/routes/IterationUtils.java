@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
 
 public class IterationUtils {
@@ -60,7 +61,7 @@ public class IterationUtils {
                 if (geometryRoutes.add(routeGeom)) {
                     NavalRoute navalRoute1 = new NavalRoute();
                     NavalRoute navalRouteInverse = new NavalRoute();
-                    navalRoute1.setId(Math.abs(routeGeom.hashCode()));
+                    navalRoute1.setId(Math.abs(routeGeom.hashCode()) + ThreadLocalRandom.current().nextInt(10, 99 + 1));
                     navalRoute1.setDistance(GeoDistanceUtil.getLengthGeoKM(routeGeom)/1.852);
                     navalRoute1.setOrigin(navalRoute.getOrigin());
                     navalRoute1.setDestination(navalRoute.getDestination());
@@ -68,7 +69,7 @@ public class IterationUtils {
                     navalRoute1.setDestination_port_id(navalRoute.getDestination_port_id());
                     navalRoutesAfterComputation.add(navalRoute1);
                     logger.info("ho aggiunto la rotta dopo computazione: \n" + navalRoute1);
-                    navalRouteInverse.setId(navalRoute1.getId() + 1);
+                    navalRouteInverse.setId(navalRoute1.getId() + ThreadLocalRandom.current().nextInt(10, 99 + 1) + 1);
                     navalRouteInverse.setDistance(navalRoute1.getDistance());
                     navalRouteInverse.setOrigin(navalRoute.getDestination());
                     navalRouteInverse.setDestination(navalRoute.getOrigin());
