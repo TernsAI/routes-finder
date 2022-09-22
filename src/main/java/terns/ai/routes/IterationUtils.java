@@ -53,7 +53,7 @@ public class IterationUtils {
         HashSet geometryRoutes = new HashSet<>();
         for (boolean[] booleansRow : booleans) {
             try {
-                logger.info("provo la combinazione \n" + booleansRow.toString());
+                logger.debug("provo la combinazione \n" + booleansRow.toString());
                 Port origin = ports.stream().filter(port -> port.getPort().equalsIgnoreCase(navalRoute.getOrigin())).findFirst().orElseThrow(Exception::new);
                 Port destination = ports.stream().filter(port -> port.getPort().equalsIgnoreCase(navalRoute.getDestination())).findFirst().orElseThrow(Exception::new);
                 Geometry routeGeom = sr.getRoute(origin.getLon(), origin.getLat(), destination.getLon(), destination.getLat(), booleansRow[0], booleansRow[1], booleansRow[2], booleansRow[3], booleansRow[4], booleansRow[5], booleansRow[6], booleansRow[7], booleansRow[8], booleansRow[9], booleansRow[10], booleansRow[11]).getGeometry();
@@ -61,7 +61,7 @@ public class IterationUtils {
                     NavalRoute navalRoute1 = new NavalRoute();
                     NavalRoute navalRouteInverse = new NavalRoute();
                     navalRoute1.setId(Math.abs(routeGeom.hashCode()));
-                    navalRoute1.setDistance(GeoDistanceUtil.getLengthGeoKM(routeGeom));
+                    navalRoute1.setDistance(GeoDistanceUtil.getLengthGeoKM(routeGeom)/1.852);
                     navalRoute1.setOrigin(navalRoute.getOrigin());
                     navalRoute1.setDestination(navalRoute.getDestination());
                     navalRoute1.setOrigin_port_id(navalRoute.getOrigin_port_id());
@@ -69,13 +69,13 @@ public class IterationUtils {
                     navalRoutesAfterComputation.add(navalRoute1);
                     logger.info("ho aggiunto la rotta dopo computazione: \n" + navalRoute1);
                     navalRouteInverse.setId(navalRoute1.getId() + 1);
-                    navalRouteInverse.setDistance(GeoDistanceUtil.getLengthGeoKM(routeGeom));
+                    navalRouteInverse.setDistance(navalRoute1.getDistance());
                     navalRouteInverse.setOrigin(navalRoute.getDestination());
                     navalRouteInverse.setDestination(navalRoute.getOrigin());
                     navalRouteInverse.setOrigin_port_id(navalRoute.getDestination_port_id());
                     navalRouteInverse.setDestination_port_id(navalRoute.getOrigin_port_id());
                     navalRoutesAfterComputation.add(navalRouteInverse);
-                    logger.info("ho aggiunto la rotta inversa: \n" + navalRouteInverse);
+                    logger.debug("ho aggiunto la rotta inversa: \n" + navalRouteInverse);
                     for (int i = 0; i < booleansRow.length; i++) {
                         if (booleansRow[i]) {
                             RelNavalRouteCanals relNavalRouteCanals = new RelNavalRouteCanals(i + 1, navalRoute1.getId());
@@ -83,7 +83,7 @@ public class IterationUtils {
                             logger.info("ho aggiunto la relazione: \n" + relNavalRouteCanals);
                             RelNavalRouteCanals relNavalRouteCanalsInverse = new RelNavalRouteCanals(i + 1, navalRouteInverse.getId());
                             relNavalRouteCanalsList.add(relNavalRouteCanalsInverse);
-                            logger.info("ho aggiunto la relazione inversa: \n" + relNavalRouteCanalsInverse);
+                            logger.debug("ho aggiunto la relazione inversa: \n" + relNavalRouteCanalsInverse);
                         }
                     }
                 }

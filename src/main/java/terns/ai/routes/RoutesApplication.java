@@ -39,7 +39,7 @@ public class RoutesApplication {
 		List<CompletableFuture<CombinationOutput>> completableFutures = new ArrayList<>();
 		for (NavalRoute navalRoute : navalRoutes) {
 
-				logger.info("prendo la rotta " + navalRoute.getOrigin() + " - " + navalRoute.getDestination());
+				logger.debug("prendo la rotta " + navalRoute.getOrigin() + " - " + navalRoute.getDestination());
 				CompletableFuture<CombinationOutput> future = CompletableFuture.supplyAsync(()->IterationUtils.combineCanalsAndRoutes(navalRoute,ports),executorService);
 				completableFutures.add(future);
 			}
@@ -67,6 +67,7 @@ public class RoutesApplication {
 		}).collect(Collectors.toList()).stream().flatMap(List::stream).collect(Collectors.toList());
 		CsvUtils.writeRoutesCsv(routes);
 		CsvUtils.writeRelNavalRouteCanalsCsv(canals);
+		logger.info("!!!	HO FINITO	!!!");
 	}
 
 }

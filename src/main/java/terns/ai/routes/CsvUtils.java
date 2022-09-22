@@ -84,8 +84,7 @@ public class CsvUtils {
 
 
     public static List<Port> readPortsCsv() throws IOException {
-        List<Port> ports = new CsvToBeanBuilder(new FileReader(new ClassPathResource(
-                "coordinates.csv").getFile()))
+        List<Port> ports = new CsvToBeanBuilder(new FileReader("/home/ec2-user/coordinates.csv"))
                 .withType(Port.class)
                 .build()
                 .parse();
