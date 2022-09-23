@@ -69,7 +69,7 @@ public class IterationUtils {
                     navalRoute1.setDestination_port_id(navalRoute.getDestination_port_id());
                     navalRoutesAfterComputation.add(navalRoute1);
                     logger.info("ho aggiunto la rotta dopo computazione: \n" + navalRoute1);
-                    navalRouteInverse.setId(navalRoute1.getId() + ThreadLocalRandom.current().nextInt(10, 9754 + 1) + 1);
+                    navalRouteInverse.setId(navalRoute1.getId() + ThreadLocalRandom.current().nextInt(9996, 19754 + 1) + 1);
                     navalRouteInverse.setDistance(navalRoute1.getDistance());
                     navalRouteInverse.setOrigin(navalRoute.getDestination());
                     navalRouteInverse.setDestination(navalRoute.getOrigin());
