@@ -58,10 +58,7 @@ public class IterationUtils {
                 Port origin = ports.stream().filter(port -> port.getPort().equalsIgnoreCase(navalRoute.getOrigin())).findFirst().orElseThrow(Exception::new);
                 Port destination = ports.stream().filter(port -> port.getPort().equalsIgnoreCase(navalRoute.getDestination())).findFirst().orElseThrow(Exception::new);
                 Geometry routeGeom = sr.getRoute(origin.getLon(), origin.getLat(), destination.getLon(), destination.getLat(), booleansRow[0], booleansRow[1], booleansRow[2], booleansRow[3], booleansRow[4], booleansRow[5], booleansRow[6], booleansRow[7], booleansRow[8], booleansRow[9], booleansRow[10], booleansRow[11]).getGeometry();
-                if (routeGeom==null){
-                    logger.info("la rotta "+origin.getPort()+" - "+destination.getPort()+"ha geometria null");
-
-                } else if (geometryRoutes.add(routeGeom)) {
+                if (geometryRoutes.add(routeGeom)&&routeGeom!=null) {
                     NavalRoute navalRoute1 = new NavalRoute();
                     NavalRoute navalRouteInverse = new NavalRoute();
                     navalRoute1.setId(Math.abs(routeGeom.hashCode()) + ThreadLocalRandom.current().nextInt(3, 9995 + 1));

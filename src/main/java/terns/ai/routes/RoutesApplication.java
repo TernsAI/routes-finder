@@ -65,6 +65,7 @@ public class RoutesApplication {
 				throw new RuntimeException(e);
 			}
 		}).collect(Collectors.toList()).stream().flatMap(List::stream).collect(Collectors.toList());
+		logger.info("Sto scrivendo i files");
 		CsvUtils.writeRoutesCsv(routes);
 		CsvUtils.writeRelNavalRouteCanalsCsv(canals);
 		logger.info("!!!	HO FINITO	!!!");
